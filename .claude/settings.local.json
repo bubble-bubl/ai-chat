@@ -12,7 +12,8 @@
       "Bash(node -e \"console.log\\(require\\(''./node_modules/@react-navigation/native/package.json''\\).version\\)\")",
       "Bash(eas build:view 467b194e-6e55-4b02-a7b1-f90ee052ee6e)",
       "Bash(eas build:logs 467b194e-6e55-4b02-a7b1-f90ee052ee6e)",
-      "Bash(eas --help)"
+      "Bash(eas --help)",
+      "Bash(cd:*)"
     ]
   }
 }
