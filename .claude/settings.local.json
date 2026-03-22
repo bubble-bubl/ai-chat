@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/User/Desktop/자동화/**)",
+      "Bash(npx create-expo-app@latest ai_chat --template blank)",
+      "Bash(npm --version)",
+      "Bash(npx expo:*)",
+      "Bash(npm install:*)"
+    ]
+  }
+}

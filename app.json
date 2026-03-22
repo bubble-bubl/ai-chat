@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "AI 말싸움 챌린지",
+    "slug": "ai-chat",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a1a2e"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a1a2e"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "geminiApiKey": "AIzaSyCIe237LPy452N5LgGi2jS-Q6GdOhe5a1U",
+      "eas": {
+        "projectId": "0ae65b62-9cac-40a6-847c-c954a8f4435c"
+      }
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}
