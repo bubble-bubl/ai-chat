@@ -7,10 +7,13 @@ import {
   SafeAreaView,
   Share,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ResultScreen({ route, navigation }) {
   const { topic, result } = route.params;
   const { score, tier, comment } = result;
+  const { colors } = useTheme();
+  const s = styles(colors);
 
   const handleShare = async () => {
     try {
@@ -18,48 +21,43 @@ export default function ResultScreen({ route, navigation }) {
         message: `🎤 AI 말싸움 챌린지 결과\n\n주제: "${topic}"\n점수: ${score}점\n티어: ${tier.emoji} ${tier.name}\n\n"${comment}"\n\n나도 도전해보기 👉 AI 말싸움 챌린지`,
       });
     } catch {
-      // 공유 취소 등 무시
+      // 공유 취소 무시
     }
   };
 
-  const handleRetry = () => {
-    navigation.popToTop();
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>결과 발표</Text>
+    <SafeAreaView style={s.container}>
+      <View style={s.content}>
+        <Text style={s.title}>결과 발표</Text>
 
         {/* 티어 배지 */}
-        <View style={[styles.tierBadge, { borderColor: tier.color }]}>
-          <Text style={styles.tierEmoji}>{tier.emoji}</Text>
-          <Text style={[styles.tierName, { color: tier.color }]}>{tier.name}</Text>
+        <View style={[s.tierBadge, { borderColor: tier.color }]}>
+          <Text style={s.tierEmoji}>{tier.emoji}</Text>
+          <Text style={[s.tierName, { color: tier.color }]}>{tier.name}</Text>
         </View>
 
         {/* 점수 */}
-        <View style={styles.scoreBox}>
-          <Text style={styles.scoreLabel}>최종 점수</Text>
-          <Text style={styles.scoreValue}>{score}</Text>
-          <Text style={styles.scoreMax}>/ 100</Text>
+        <View style={s.scoreBox}>
+          <Text style={s.scoreLabel}>최종 점수</Text>
+          <Text style={s.scoreValue}>{score}</Text>
+          <Text style={s.scoreMax}>/ 100</Text>
         </View>
 
         {/* AI 한줄평 */}
-        <View style={styles.commentBox}>
-          <Text style={styles.commentLabel}>AI의 한마디</Text>
-          <Text style={styles.commentText}>"{comment}"</Text>
+        <View style={s.commentBox}>
+          <Text style={s.commentLabel}>AI의 한마디</Text>
+          <Text style={s.commentText}>"{comment}"</Text>
         </View>
 
-        {/* 주제 */}
-        <Text style={styles.topicText}>주제: {topic}</Text>
+        <Text style={s.topicText}>주제: {topic}</Text>
 
         {/* 버튼들 */}
-        <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.shareBtn} onPress={handleShare}>
-            <Text style={styles.shareBtnText}>📢 결과 공유</Text>
+        <View style={s.buttonRow}>
+          <TouchableOpacity style={s.shareBtn} onPress={handleShare}>
+            <Text style={s.shareBtnText}>📢 결과 공유</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.retryBtn} onPress={handleRetry}>
-            <Text style={styles.retryBtnText}>다시 도전</Text>
+          <TouchableOpacity style={s.retryBtn} onPress={() => navigation.popToTop()}>
+            <Text style={s.retryBtnText}>다시 도전</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -67,8 +65,8 @@ export default function ResultScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+const styles = (c) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: c.bg },
   content: {
     flex: 1,
     alignItems: 'center',
@@ -76,63 +74,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     gap: 20,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 8,
-  },
+  title: { fontSize: 28, fontWeight: 'bold', color: c.text, marginBottom: 8 },
   tierBadge: {
     alignItems: 'center',
     borderWidth: 3,
     borderRadius: 20,
     paddingHorizontal: 40,
     paddingVertical: 20,
-    backgroundColor: '#16213e',
+    backgroundColor: c.tierBadgeBg,
   },
   tierEmoji: { fontSize: 60 },
   tierName: { fontSize: 28, fontWeight: 'bold', marginTop: 8 },
-  scoreBox: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: 6,
-  },
-  scoreLabel: { color: '#aaa', fontSize: 16 },
-  scoreValue: { color: '#e94560', fontSize: 52, fontWeight: 'bold' },
-  scoreMax: { color: '#666', fontSize: 20 },
+  scoreBox: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  scoreLabel: { color: c.subtext, fontSize: 16 },
+  scoreValue: { color: c.scoreValue, fontSize: 52, fontWeight: 'bold' },
+  scoreMax: { color: c.scoreMax, fontSize: 20 },
   commentBox: {
-    backgroundColor: '#16213e',
+    backgroundColor: c.card,
     borderRadius: 12,
     padding: 16,
     width: '100%',
     borderWidth: 1,
-    borderColor: '#0f3460',
+    borderColor: c.border,
   },
-  commentLabel: { color: '#e94560', fontSize: 12, fontWeight: 'bold', marginBottom: 6 },
-  commentText: { color: '#e0e0e0', fontSize: 15, lineHeight: 22, fontStyle: 'italic' },
-  topicText: { color: '#666', fontSize: 13 },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 12,
-    width: '100%',
-    marginTop: 8,
-  },
+  commentLabel: { color: c.primary, fontSize: 12, fontWeight: 'bold', marginBottom: 6 },
+  commentText: { color: c.text, fontSize: 15, lineHeight: 22, fontStyle: 'italic' },
+  topicText: { color: c.subtext, fontSize: 13 },
+  buttonRow: { flexDirection: 'row', gap: 12, width: '100%', marginTop: 8 },
   shareBtn: {
-    flex: 1,
-    backgroundColor: '#e94560',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
+    flex: 1, backgroundColor: c.primary, borderRadius: 12,
+    paddingVertical: 14, alignItems: 'center',
   },
   shareBtnText: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
   retryBtn: {
-    flex: 1,
-    backgroundColor: '#16213e',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e94560',
+    flex: 1, backgroundColor: c.card, borderRadius: 12,
+    paddingVertical: 14, alignItems: 'center',
+    borderWidth: 1, borderColor: c.primary,
   },
-  retryBtnText: { color: '#e94560', fontWeight: 'bold', fontSize: 15 },
+  retryBtnText: { color: c.primary, fontWeight: 'bold', fontSize: 15 },
 });

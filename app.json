@@ -25,7 +25,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "geminiApiKey": "AIzaSyCIe237LPy452N5LgGi2jS-Q6GdOhe5a1U",
+      "geminiApiKey": "",
       "eas": {
         "projectId": "0ae65b62-9cac-40a6-847c-c954a8f4435c"
       }

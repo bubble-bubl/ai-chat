@@ -13,7 +13,8 @@
       "Bash(eas build:view 467b194e-6e55-4b02-a7b1-f90ee052ee6e)",
       "Bash(eas build:logs 467b194e-6e55-4b02-a7b1-f90ee052ee6e)",
       "Bash(eas --help)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(vercel --yes)"
     ]
   }
 }

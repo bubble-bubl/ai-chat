@@ -12,16 +12,19 @@ import {
   Platform,
 } from 'react-native';
 import { getAIRebuttal, getScoreAndTier } from '../services/geminiService';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ChatScreen({ route, navigation }) {
   const { topic, userSide, aiSide, totalRounds = 5 } = route.params;
+  const { colors } = useTheme();
+  const s = styles(colors);
+
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [round, setRound] = useState(1);
   const [loading, setLoading] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const scrollRef = useRef(null);
-  // history: 번갈아가며 [사용자, AI, 사용자, AI, ...]
   const historyRef = useRef([]);
 
   useEffect(() => {
@@ -46,7 +49,6 @@ export default function ChatScreen({ route, navigation }) {
 
       if (round >= totalRounds) {
         setGameOver(true);
-        // 잠깐 딜레이 후 결과 화면으로
         setTimeout(async () => {
           setLoading(true);
           try {
@@ -69,23 +71,23 @@ export default function ChatScreen({ route, navigation }) {
         ...prev,
         { role: 'ai', text: '(오류가 발생했습니다. 다시 시도해주세요.)', round },
       ]);
-      historyRef.current.pop(); // 실패한 유저 메시지 제거
+      historyRef.current.pop();
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={s.container}>
       {/* 헤더 */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Text style={styles.backText}>← 나가기</Text>
+      <View style={s.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
+          <Text style={s.backText}>← 나가기</Text>
         </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.topicLabel} numberOfLines={1}>{topic}</Text>
-          <Text style={styles.sideLabel}>나: {userSide} vs AI: {aiSide}</Text>
-          <Text style={styles.roundLabel}>
+        <View style={s.headerCenter}>
+          <Text style={s.topicLabel} numberOfLines={1}>{topic}</Text>
+          <Text style={s.sideLabel}>나: {userSide} vs AI: {aiSide}</Text>
+          <Text style={s.roundLabel}>
             {gameOver ? '⚔️ 종료' : `⚔️ ${round} / ${totalRounds} 라운드`}
           </Text>
         </View>
@@ -100,13 +102,12 @@ export default function ChatScreen({ route, navigation }) {
       >
         <ScrollView
           ref={scrollRef}
-          style={styles.chatArea}
-          contentContainerStyle={styles.chatContent}
+          style={s.chatArea}
+          contentContainerStyle={s.chatContent}
         >
-          {/* 시작 안내 */}
           {messages.length === 0 && (
-            <View style={styles.startHint}>
-              <Text style={styles.startHintText}>
+            <View style={s.startHint}>
+              <Text style={s.startHintText}>
                 AI가 반대편을 맡습니다.{'\n'}첫 번째 주장을 입력하세요!
               </Text>
             </View>
@@ -115,28 +116,28 @@ export default function ChatScreen({ route, navigation }) {
           {messages.map((msg, idx) => (
             <View
               key={idx}
-              style={[
-                styles.messageBubbleWrap,
-                msg.role === 'user' ? styles.userWrap : styles.aiWrap,
-              ]}
+              style={[s.messageBubbleWrap, msg.role === 'user' ? s.userWrap : s.aiWrap]}
             >
-              {msg.role === 'ai' && <Text style={styles.aiLabel}>AI</Text>}
-              <View
-                style={[
-                  styles.bubble,
-                  msg.role === 'user' ? styles.userBubble : styles.aiBubble,
-                ]}
-              >
-                <Text style={styles.bubbleText}>{msg.text}</Text>
+              {msg.role === 'ai' && (
+                <View style={s.aiAvatar}>
+                  <Text style={s.aiAvatarEmoji}>🤖</Text>
+                </View>
+              )}
+              <View style={[s.bubble, msg.role === 'user' ? s.userBubble : s.aiBubble]}>
+                <Text style={msg.role === 'user' ? s.userBubbleText : s.aiBubbleText}>
+                  {msg.text}
+                </Text>
               </View>
-              {msg.role === 'user' && <Text style={styles.userLabel}>나</Text>}
+              {msg.role === 'user' && <Text style={s.userLabel}>나</Text>}
             </View>
           ))}
 
           {loading && (
-            <View style={styles.aiWrap}>
-              <Text style={styles.aiLabel}>AI</Text>
-              <View style={[styles.bubble, styles.aiBubble, styles.loadingBubble]}>
+            <View style={s.aiWrap}>
+              <View style={s.aiAvatar}>
+                <Text style={s.aiAvatarEmoji}>🤖</Text>
+              </View>
+              <View style={[s.bubble, s.aiBubble, s.loadingBubble]}>
                 <ActivityIndicator color="#e94560" size="small" />
               </View>
             </View>
@@ -144,24 +145,24 @@ export default function ChatScreen({ route, navigation }) {
         </ScrollView>
 
         {/* 입력창 */}
-        <View style={styles.inputRow}>
+        <View style={s.inputRow}>
           <TextInput
-            style={styles.input}
+            style={s.input}
             value={inputText}
             onChangeText={setInputText}
             placeholder={gameOver ? '게임 종료!' : `라운드 ${round} 주장을 입력하세요`}
-            placeholderTextColor="#666"
+            placeholderTextColor={colors.subtext}
             multiline
             editable={!loading && !gameOver}
             returnKeyType="send"
             onSubmitEditing={handleSend}
           />
           <TouchableOpacity
-            style={[styles.sendBtn, (loading || !inputText.trim() || gameOver) && styles.sendBtnDisabled]}
+            style={[s.sendBtn, (loading || !inputText.trim() || gameOver) && s.sendBtnDisabled]}
             onPress={handleSend}
             disabled={loading || !inputText.trim() || gameOver}
           >
-            <Text style={styles.sendText}>전송</Text>
+            <Text style={s.sendText}>전송</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -169,90 +170,79 @@ export default function ChatScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1a2e' },
+const styles = (c) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: c.bg },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#0f3460',
+    borderBottomColor: c.border,
+    backgroundColor: c.card,
   },
   backBtn: { width: 60 },
-  backText: { color: '#e94560', fontSize: 14 },
+  backText: { color: c.primary, fontSize: 14 },
   headerCenter: { flex: 1, alignItems: 'center' },
-  topicLabel: { color: '#fff', fontWeight: 'bold', fontSize: 14, maxWidth: 200 },
-  sideLabel: { color: '#aaa', fontSize: 11, marginTop: 1 },
-  roundLabel: { color: '#e94560', fontSize: 12, marginTop: 2 },
+  topicLabel: { color: c.text, fontWeight: 'bold', fontSize: 14, maxWidth: 200 },
+  sideLabel: { color: c.subtext, fontSize: 11, marginTop: 1 },
+  roundLabel: { color: c.primary, fontSize: 12, marginTop: 2 },
   chatArea: { flex: 1 },
   chatContent: { padding: 16, gap: 12 },
-  startHint: {
-    alignItems: 'center',
-    paddingVertical: 20,
-  },
-  startHintText: {
-    color: '#666',
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  messageBubbleWrap: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 6,
-  },
+  startHint: { alignItems: 'center', paddingVertical: 20 },
+  startHintText: { color: c.hintText, fontSize: 14, textAlign: 'center', lineHeight: 22 },
+  messageBubbleWrap: { flexDirection: 'row', alignItems: 'flex-end', gap: 6 },
   userWrap: { justifyContent: 'flex-end' },
   aiWrap: { justifyContent: 'flex-start' },
-  aiLabel: { color: '#e94560', fontSize: 11, marginBottom: 4 },
-  userLabel: { color: '#aaa', fontSize: 11, marginBottom: 4 },
-  bubble: {
-    maxWidth: '78%',
+  aiAvatar: {
+    width: 32,
+    height: 32,
     borderRadius: 16,
-    padding: 12,
+    backgroundColor: c.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
   },
-  userBubble: {
-    backgroundColor: '#e94560',
-    borderBottomRightRadius: 4,
-  },
+  aiAvatarEmoji: { fontSize: 18 },
+  userLabel: { color: c.subtext, fontSize: 11, marginBottom: 4 },
+  bubble: { maxWidth: '75%', borderRadius: 16, padding: 12 },
+  userBubble: { backgroundColor: c.userBubble, borderBottomRightRadius: 4 },
   aiBubble: {
-    backgroundColor: '#16213e',
+    backgroundColor: c.aiBubble,
     borderBottomLeftRadius: 4,
     borderWidth: 1,
-    borderColor: '#0f3460',
+    borderColor: c.border,
   },
-  loadingBubble: {
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-  },
-  bubbleText: { color: '#fff', fontSize: 15, lineHeight: 22 },
+  loadingBubble: { paddingVertical: 14, paddingHorizontal: 20 },
+  userBubbleText: { color: c.userBubbleText, fontSize: 15, lineHeight: 22 },
+  aiBubbleText: { color: c.aiBubbleText, fontSize: 15, lineHeight: 22 },
   inputRow: {
     flexDirection: 'row',
     padding: 12,
     gap: 8,
     borderTopWidth: 1,
-    borderTopColor: '#0f3460',
-    backgroundColor: '#1a1a2e',
+    borderTopColor: c.border,
+    backgroundColor: c.card,
   },
   input: {
     flex: 1,
-    backgroundColor: '#16213e',
+    backgroundColor: c.inputBg,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    color: '#fff',
+    color: c.inputText,
     fontSize: 15,
     maxHeight: 100,
     borderWidth: 1,
-    borderColor: '#0f3460',
+    borderColor: c.border,
   },
   sendBtn: {
-    backgroundColor: '#e94560',
+    backgroundColor: c.primary,
     borderRadius: 20,
     paddingHorizontal: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  sendBtnDisabled: { backgroundColor: '#555' },
+  sendBtnDisabled: { backgroundColor: c.border },
   sendText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
 });
