@@ -23,6 +23,9 @@ export default {
     },
     web: {
       favicon: './assets/favicon.png',
+      meta: {
+        'google-adsense-account': 'ca-pub-8590840812076554',
+      },
     },
     extra: {
       geminiApiKey: process.env.GEMINI_API_KEY,

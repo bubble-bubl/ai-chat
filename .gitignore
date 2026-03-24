@@ -11,3 +11,6 @@ ios/
 web-build/
 .env
 GEMINI_API_KEY.env
+
+.vercel
+.env*.local
