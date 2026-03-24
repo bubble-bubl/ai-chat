@@ -5,8 +5,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
   Share,
+  Alert,
+  Platform,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useTheme } from '../context/ThemeContext';
 
 export default function ResultScreen({ route, navigation }) {
@@ -18,7 +22,7 @@ export default function ResultScreen({ route, navigation }) {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `🎤 AI 말싸움 챌린지 결과\n\n주제: "${topic}"\n점수: ${score}점\n티어: ${tier.emoji} ${tier.name}\n\n"${comment}"\n\n나도 도전해보기 👉 AI 말싸움 챌린지`,
+        message: `🎤 AI 말싸움 챌린지 결과\n\n주제: "${topic}"\n점수: ${score}점\n티어: ${tier.emoji} ${tier.name}\n\n"${comment}"\n\n나도 도전해보기 👉 https://withaiplay.com`,
       });
     } catch {
       // 공유 취소 무시
@@ -27,7 +31,7 @@ export default function ResultScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={s.container}>
-      <View style={s.content}>
+      <ScrollView contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <Text style={s.title}>결과 발표</Text>
 
         {/* 티어 배지 */}
@@ -60,7 +64,32 @@ export default function ResultScreen({ route, navigation }) {
             <Text style={s.retryBtnText}>다시 도전</Text>
           </TouchableOpacity>
         </View>
-      </View>
+
+        {/* 커피값 보내기 */}
+        <TouchableOpacity
+          style={s.coffeeBtn}
+          onPress={() => {
+            if (Platform.OS === 'web') {
+              window.alert('☕ 커피 한잔 후원해주세요!\n부산은행 1122150059009 (이형민)\n앱 출시하고 싶어요 ㅠㅠ');
+              navigator.clipboard?.writeText('1122150059009');
+            } else {
+              Alert.alert(
+                '☕ 커피 한잔 후원해주세요!',
+                '부산은행 1122150059009 (이형민)\n앱 출시하고 싶어요 ㅠㅠ',
+                [
+                  {
+                    text: '계좌번호 복사',
+                    onPress: () => Clipboard.setStringAsync('1122150059009'),
+                  },
+                  { text: '닫기', style: 'cancel' },
+                ]
+              );
+            }
+          }}
+        >
+          <Text style={s.coffeeBtnText}>☕ 커피 한잔 후원해주세요!</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -68,10 +97,9 @@ export default function ResultScreen({ route, navigation }) {
 const styles = (c) => StyleSheet.create({
   container: { flex: 1, backgroundColor: c.bg },
   content: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 24,
+    paddingVertical: 32,
     gap: 20,
   },
   title: { fontSize: 28, fontWeight: 'bold', color: c.text, marginBottom: 8 },
@@ -112,4 +140,14 @@ const styles = (c) => StyleSheet.create({
     borderWidth: 1, borderColor: c.primary,
   },
   retryBtnText: { color: c.primary, fontWeight: 'bold', fontSize: 15 },
+  coffeeBtn: {
+    width: '100%',
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    backgroundColor: '#FFDD00',
+    borderWidth: 1,
+    borderColor: '#E6C800',
+  },
+  coffeeBtnText: { color: '#5F4B00', fontWeight: 'bold', fontSize: 14 },
 });

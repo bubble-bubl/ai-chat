@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import Constants from 'expo-constants';
 import {
   REBUTTAL_SYSTEM_PROMPT,
   SCORE_SYSTEM_PROMPT,
@@ -8,7 +7,7 @@ import {
 } from '../constants/prompts';
 import { getTierByScore } from '../constants/tiers';
 
-const API_KEY = Constants.expoConfig?.extra?.geminiApiKey;
+const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 function getModel(systemInstruction) {

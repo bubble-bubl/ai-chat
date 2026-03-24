@@ -35,7 +35,8 @@ export default function TopicSelectScreen({ navigation }) {
       <View style={s.headerRow}>
         <Text style={s.title}>AI 말싸움 챌린지</Text>
         <TouchableOpacity style={s.themeToggle} onPress={toggleTheme}>
-          <Text style={s.themeToggleText}>{isDark ? '☀️' : '🌙'}</Text>
+          <Text style={s.themeToggleIcon}>{isDark ? '☀️' : '🌙'}</Text>
+          <Text style={s.themeToggleLabel}>{isDark ? '라이트' : '다크'}</Text>
         </TouchableOpacity>
       </View>
       <Text style={s.subtitle}>주제를 골라서 AI와 싸워보세요!</Text>
@@ -115,9 +116,20 @@ const styles = (c) => StyleSheet.create({
     marginBottom: 4,
     paddingHorizontal: 16,
   },
-  title: { fontSize: 26, fontWeight: 'bold', color: c.primary, flex: 1, textAlign: 'center', marginLeft: 36 },
-  themeToggle: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  themeToggleText: { fontSize: 20 },
+  title: { fontSize: 26, fontWeight: 'bold', color: c.primary, flex: 1, textAlign: 'center' },
+  themeToggle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: c.card,
+    borderWidth: 1,
+    borderColor: c.border,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    minWidth: 52,
+  },
+  themeToggleIcon: { fontSize: 18 },
+  themeToggleLabel: { fontSize: 10, color: c.subtext, fontWeight: '600', marginTop: 1 },
   subtitle: { fontSize: 14, color: c.subtext, textAlign: 'center', marginBottom: 20 },
   categoryRow: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 8 },
   categoryTab: { flex: 1, paddingVertical: 8, borderRadius: 20, backgroundColor: c.tabInactive, alignItems: 'center' },
