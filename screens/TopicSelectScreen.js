@@ -26,7 +26,7 @@ export default function TopicSelectScreen({ navigation }) {
   const handleSideSelect = (topic, sideIndex) => {
     const userSide = topic.sides[sideIndex];
     const aiSide = topic.sides[1 - sideIndex];
-    navigation.navigate('Chat', { topic: topic.title, userSide, aiSide, totalRounds: selectedRounds });
+    navigation.navigate('Chat', { topic: topic.title, userSide, aiSide, totalRounds: selectedRounds, category: selectedCategory });
   };
 
   return (
@@ -55,6 +55,11 @@ export default function TopicSelectScreen({ navigation }) {
           </TouchableOpacity>
         ))}
       </View>
+
+      {/* 억지주장 설명 */}
+      {selectedCategory === '억지주장' && (
+        <Text style={s.categoryDesc}>서로가 억지로 반박하는 주제입니다</Text>
+      )}
 
       {/* 주제 목록 */}
       <ScrollView contentContainerStyle={s.topicList}>
@@ -131,6 +136,7 @@ const styles = (c) => StyleSheet.create({
   themeToggleIcon: { fontSize: 18 },
   themeToggleLabel: { fontSize: 10, color: c.subtext, fontWeight: '600', marginTop: 1 },
   subtitle: { fontSize: 14, color: c.subtext, textAlign: 'center', marginBottom: 20 },
+  categoryDesc: { fontSize: 12, color: c.subtext, textAlign: 'center', marginBottom: 10, paddingHorizontal: 16 },
   categoryRow: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 8 },
   categoryTab: { flex: 1, paddingVertical: 8, borderRadius: 20, backgroundColor: c.tabInactive, alignItems: 'center' },
   categoryTabActive: { backgroundColor: c.tabActive },

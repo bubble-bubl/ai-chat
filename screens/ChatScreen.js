@@ -15,7 +15,7 @@ import { getAIRebuttal, getScoreAndTier } from '../services/geminiService';
 import { useTheme } from '../context/ThemeContext';
 
 export default function ChatScreen({ route, navigation }) {
-  const { topic, userSide, aiSide, totalRounds = 5 } = route.params;
+  const { topic, userSide, aiSide, totalRounds = 5, category = '' } = route.params;
   const { colors } = useTheme();
   const s = styles(colors);
 
@@ -42,7 +42,7 @@ export default function ChatScreen({ route, navigation }) {
 
     setLoading(true);
     try {
-      const aiText = await getAIRebuttal(topic, userSide, aiSide, historyRef.current.slice(0, -1), text);
+      const aiText = await getAIRebuttal(topic, userSide, aiSide, historyRef.current.slice(0, -1), text, category);
       historyRef.current.push(aiText);
       const aiMsg = { role: 'ai', text: aiText, round };
       setMessages((prev) => [...prev, aiMsg]);
@@ -52,7 +52,7 @@ export default function ChatScreen({ route, navigation }) {
         setTimeout(async () => {
           setLoading(true);
           try {
-            const result = await getScoreAndTier(topic, userSide, aiSide, historyRef.current);
+            const result = await getScoreAndTier(topic, userSide, aiSide, historyRef.current, totalRounds);
             navigation.replace('Result', { topic, result });
           } catch {
             navigation.replace('Result', {

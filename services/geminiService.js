@@ -20,16 +20,16 @@ function getModel(systemInstruction) {
   });
 }
 
-export async function getAIRebuttal(topic, userSide, aiSide, history, userArgument) {
+export async function getAIRebuttal(topic, userSide, aiSide, history, userArgument, category = '') {
   const model = getModel(REBUTTAL_SYSTEM_PROMPT);
-  const prompt = buildRebuttalPrompt(topic, userSide, aiSide, history, userArgument);
+  const prompt = buildRebuttalPrompt(topic, userSide, aiSide, history, userArgument, category);
   const result = await model.generateContent(prompt);
   return result.response.text().trim();
 }
 
-export async function getScoreAndTier(topic, userSide, aiSide, history) {
+export async function getScoreAndTier(topic, userSide, aiSide, history, totalRounds = 5) {
   const model = getModel(SCORE_SYSTEM_PROMPT);
-  const prompt = buildScorePrompt(topic, userSide, aiSide, history);
+  const prompt = buildScorePrompt(topic, userSide, aiSide, history, totalRounds);
   const result = await model.generateContent(prompt);
   const text = result.response.text().trim();
 
